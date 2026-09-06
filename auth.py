@@ -12,7 +12,7 @@ from db import get_db
 from models import User
 
 
-SECRET_KEY = os.getenv("SECRET_KEY", "change-this-secret")
+SECRET_KEY = os.getenv("SECRET")
 ALGORITHM = "HS256"
 
 password_hash = PasswordHash.recommended()
