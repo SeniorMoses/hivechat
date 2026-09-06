@@ -22,42 +22,71 @@ router = APIRouter()
 @router.post("/signup", response_model=TokenResponse)
 async def signup(
     data: SignupRequest,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_db)
 ):
-    result = await db.execute(
-        select(User).where(
-            (User.username == data.username)
-            | (User.email == data.email)
+    try:
+        print("SIGNUP: received request")
+
+        result = await db.execute(
+            select(User).where(
+                (User.username == data.username) |
+                (User.email == data.email)
+            )
         )
-    )
 
-    existing_user = result.scalar_one_or_none()
+        print("SIGNUP: database query completed")
 
-    if existing_user:
+        existing_user = result.scalar_one_or_none()
+
+        if existing_user:
+            raise HTTPException(
+                status_code=400,
+                detail="Username or email already exists"
+            )
+
+        print("SIGNUP: user does not exist")
+
+        hashed_password = hash_password(data.password)
+
+        print("SIGNUP: password hashed")
+
+        user = User(
+            username=data.username,
+            email=data.email,
+            password_hash=hashed_password,
+        )
+
+        db.add(user)
+
+        print("SIGNUP: user added to session")
+
+        await db.commit()
+
+        print("SIGNUP: commit completed")
+
+        await db.refresh(user)
+
+        print("SIGNUP: refresh completed")
+
+        token = create_access_token(user.id)
+
+        print("SIGNUP: token created")
+
+        return {
+            "access_token": token,
+            "token_type": "bearer"
+        }
+
+    except HTTPException:
+        raise
+
+    except Exception as e:
+        print("SIGNUP ERROR:", repr(e))
+        await db.rollback()
         raise HTTPException(
-            status_code=400,
-            detail="Username or email already exists",
+            status_code=500,
+            detail=f"Signup failed: {str(e)}"
         )
-
-    user = User(
-        username=data.username,
-        email=data.email,
-        password_hash=hash_password(data.password),
-    )
-
-    db.add(user)
-
-    await db.commit()
-    await db.refresh(user)
-
-    token = create_access_token(user.id)
-
-    return {
-        "access_token": token,
-        "token_type": "bearer",
-    }
-
-
 @router.post("/login", response_model=TokenResponse)
 async def login(
     data: LoginRequest,
