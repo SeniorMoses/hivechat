@@ -74,7 +74,7 @@ async def signup(
 
         return {
             "access_token": token,
-            "token_type": "bearer"
+            "token_type": "bearer",
             "user_id":user.id
         }
 
