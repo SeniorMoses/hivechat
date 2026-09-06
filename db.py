@@ -14,7 +14,7 @@ from sqlalchemy.orm import DeclarativeBase
 load_dotenv()
 
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DBURL")
 
 
 if DATABASE_URL.startswith("postgresql://"):
