@@ -136,7 +136,7 @@ async function login() {
 function connectWebSocket() {
 
     socket = new WebSocket(
-        `ws://127.0.0.1:8000/ws?token=${token}`
+        `wss://hivechat-mfku.onrender.com/ws?token=${token}`
     );
 
 
@@ -232,7 +232,7 @@ async function checkStatus() {
 
 
     const response = await fetch(
-        `http://127.0.0.1:8000/users/${friendId}/status`
+        `https://hivechat-mfku.onrender.com/users/${friendId}/status`
     );
 
 
