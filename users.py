@@ -121,3 +121,25 @@ async def login(
         "access_token": token,
         "token_type": "bearer",
     }
+
+@router.get("/users/{user_id}/status")
+async def get_user_status(
+    user_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    result = await db.execute(
+        select(User).where(User.id == user_id)
+    )
+
+    user = result.scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    return {
+        "user_id": user.id,
+        "online": user.online
+        }
