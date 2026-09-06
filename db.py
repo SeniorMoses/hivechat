@@ -10,7 +10,7 @@ from sqlalchemy.orm import DeclarativeBase
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DBURL")
 
 engine = create_async_engine(
     DATABASE_URL,
