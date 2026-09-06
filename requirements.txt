@@ -4,6 +4,7 @@ sqlalchemy
 asyncpg
 python-dotenv
 pyjwt
+psycopg2
 gunicorn
 pwdlib[argon2]
 email-validator
