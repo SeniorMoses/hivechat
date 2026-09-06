@@ -75,6 +75,7 @@ async def signup(
         return {
             "access_token": token,
             "token_type": "bearer"
+            "user_id":user.id
         }
 
     except HTTPException:
@@ -120,6 +121,7 @@ async def login(
     return {
         "access_token": token,
         "token_type": "bearer",
+        "user_id":user.id
     }
 
 @router.get("/users/{user_id}/status")
